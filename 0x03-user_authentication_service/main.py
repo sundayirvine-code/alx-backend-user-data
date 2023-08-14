@@ -60,3 +60,30 @@ try:
     print("Password updated")
 except ValueError:
     print("Error")
+
+print('-----------------------------------------------------')
+
+from auth import _hash_password
+
+print(_hash_password("Hello Holberton"))
+
+print('-----------------------------------------------------')
+
+from auth import Auth
+
+email = 'me@me.com'
+password = 'mySecuredPwd'
+
+auth = Auth()
+
+try:
+    user = auth.register_user(email, password)
+    print("successfully created a new user!")
+except ValueError as err:
+    print("could not create a new user: {}".format(err))
+
+try:
+    user = auth.register_user(email, password)
+    print("successfully created a new user!")
+except ValueError as err:
+    print("could not create a new user: {}".format(err))
