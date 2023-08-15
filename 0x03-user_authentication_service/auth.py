@@ -86,3 +86,25 @@ class Auth:
         Destroy the session for the corresponding user.
         """
         self._db.update_user(user_id, session_id=None)
+
+
+     def get_reset_password_token(self, email: str) -> str:
+        """
+        Generate a reset password token for the user and return it.
+    
+        Args:
+            email (str): The email of the user for whom to generate the token.
+    
+        Returns:
+            str: The generated reset password token.
+    
+        Raises:
+            ValueError: If the user does not exist.
+        """
+        try:
+            user = self._db.find_user_by(email=email)
+            reset_token = str(uuid.uuid4())
+            self._db.update_user(user.id, reset_token=reset_token)
+            return reset_token
+        except NoResultFound:
+            raise ValueError("User does not exist.")
