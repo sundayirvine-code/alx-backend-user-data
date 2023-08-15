@@ -104,6 +104,34 @@ def get_reset_password_token():
     except ValueError as err:
         abort(403)
 
+@app.route("/reset_password", methods=["PUT"])
+def update_password():
+    """
+    Update the user's password based on the reset token.
+
+    This endpoint expects form data with the "email", "reset_token", and "new_password"
+    fields. It attempts to update the user's password using the reset token.
+    If the token is invalid, a 403 HTTP status is returned.
+    If the token is valid, a 200 HTTP status is returned along with a JSON payload
+    containing the user's email and a "Password updated" message.
+
+    Returns:
+        JSON response with user's email, message, and HTTP status code.
+    """
+    email = request.form.get("email")
+    reset_token = request.form.get("reset_token")
+    new_password = request.form.get("new_password")
+
+    try:
+        AUTH.update_password(reset_token, new_password)
+        response_data = {
+            "email": email,
+            "message": "Password updated"
+        }
+        return jsonify(response_data), 200
+    except ValueError as err:
+        abort(403)
+
 if __name__ == "__main__":
     app.run(host="0.0.0.0", port="5000")
 
