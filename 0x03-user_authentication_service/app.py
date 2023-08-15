@@ -51,6 +51,34 @@ def log_out():
     else:
         abort(403)
 
+@app.route('/profile', methods=['GET'])
+def profile() -> str:
+    """
+    Retrieve user profile information based on the session ID.
+    
+    This endpoint expects a session ID cookie. It uses the session ID to find
+    the corresponding user. If the user exists, it responds with a 200 HTTP status
+    and a JSON payload containing the user's email. If the user does not exist, a
+    403 HTTP status is returned.
+
+    Returns:
+        JSON response with user's email and HTTP status code.
+    """
+    session_id = request.cookies.get("session_id", None)
+
+    if session_id is None:
+        abort(403)
+
+    user = AUTH.get_user_from_session_id(session_id)
+
+    if user is None:
+        abort(403)
+
+    profile_data = {
+            "email": user.email
+        }
+    return jsonify(profile_data), 200
+
 if __name__ == "__main__":
     app.run(host="0.0.0.0", port="5000")
 
